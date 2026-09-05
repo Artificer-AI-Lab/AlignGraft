@@ -320,28 +320,13 @@
                     <h2 class="title is-3 section-title">Abstract</h2>
                     <div class="content has-text-justified" style="max-width:900px;margin:15px auto;">
                         <p>
-                            Aligning a text-to-image flow model with a reward is currently <b>paid per model</b>: alignment
-                            fine-tuning, whether by reinforcement learning (RL) or preference optimization, must be repeated for
-                            every checkpoint and grows prohibitive with scale, while test-time alignment avoids training but must
-                            query the reward at every sample, through its gradient, many candidate generations, or a separately
-                            trained value function, and tends to under-optimize.
+                            Aligning a text-to-image generation flow model with a reward makes it follow objectives that the training data alone does not provide. Alignment fine-tuning delivers this by reinforcement learning (RL) or preference optimization, but it must be repeated for every checkpoint and returns a model fixed at the reward and strength it was trained with. Test-time alignment instead steers a frozen model during sampling, allowing task-specific and sample-specific guidance. Existing methods obtain this only by drawing the per-step signal from the reward function itself, through its gradient, or through a separately trained value function.
                         </p>
                         <p>
-                            We propose changing the <b>supervision source</b>: let a model supervise, instead of a reward function.
-                            A small aligned model, kept together with its base, stores its training reward as an implicit,
-                            step-wise, KL-anchored signal expressed in the sampler's own coordinates. We explore whether this
-                            model-form supervision can cross scale, and show that it does: our method, <b>AlignGraft</b>, aligns a
-                            larger, frozen, never-tuned model by adding the weak pair's velocity difference during sampling. The
-                            transport is exact under a shared noising kernel and needs neither the reward nor its gradient at test
-                            time. The method has no schedules, only a single scalar strength, whose unit value reproduces the
-                            source pair's own alignment strength.
+                           We propose changing the supervision source: let a pair of weak models, not a reward function, supply the supervision. A source aligned model, kept together with its base as a source alignment pair, stores its training reward as an implicit, step-wise, KL-anchored signal expressed in the sampler's own coordinates. We explore whether this model-form supervision can cross scale, and show that it does: our method, AlignGraft, aligns a larger, frozen, never-tuned model by adding the pair's velocity difference during sampling. The transport is exact under a shared noising kernel and needs neither the reward nor its gradient at test time. The method has no schedules, only a single scalar that controls the alignment strength and can extrapolate it beyond that of the source alignment pair.
                         </p>
                         <p>
-                            Across image and video flow models (Stable Diffusion&nbsp;3.5, FLUX, and Wan), the transfer lifts the
-                            frozen guided model on preference, compositional, and text-rendering rewards, can exceed the aligned
-                            source model itself, and preserves the guided model's fidelity at a small constant sampling overhead.
-                            Extensive experiments demonstrate that one cheap alignment run on a weak model becomes a
-                            <b>portable reward asset</b> for the whole model family.
+                            Across image and video flow models (Stable Diffusion 3.5, FLUX, and Wan), the transfer lifts the frozen large model on preference, compositional, and text-rendering rewards, can exceed the source aligned model itself, and preserves the large model's fidelity at a small constant sampling overhead. Extensive experiments show that one alignment run on a weak model produces supervision that the whole model family can reuse at test time.
                         </p>
                     </div>
                 </div>
